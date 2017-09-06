@@ -15,7 +15,8 @@ class CreateSleepTimeTable extends Migration
     {
         Schema::create("sleep_time", function(Blueprint $table){
             $table->bigIncrements('id');
-            $table->string("device_id");
+            //$table->string("device_id");
+            $table->integer('device_id')->references("id")->on("device")->onupdate("cascade");
             $table->dateTime('data_send_time');
             $table->dateTime('time_register_reply');
             $table->time('bed_time');

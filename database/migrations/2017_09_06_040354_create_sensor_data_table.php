@@ -15,7 +15,8 @@ class CreateSensorDataTable extends Migration
     {
         Schema::create('sensor_data', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string("device_id");
+            //$table->string("device_id");
+            $table->integer('device_id')->references("id")->on("device")->onupdate("cascade");
             $table->dateTime('data_send_time');
             $table->dateTime('time_check');
             $table->boolean('status_screen');

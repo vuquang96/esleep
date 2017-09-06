@@ -18,21 +18,26 @@ class ApiController extends Controller
 
             $data = json_decode($_POST['esleep']);
                 
-            
+            $device_id = 0;
             foreach ($data->sensor_data as $value) {
-                $device = Device::all()->where("device_id" ,$data->user_id)->count();
+                $device = Device::all()->where("device_id" ,$data->user_id)->where("device_type" ,$data->device_os)->count();
                 if(!$device){
                     // Device
                     $device = new Device();
                     $device->device_id = $data->user_id;
                     $device->device_type = $data->device_os; 
                     $device->save();
+                    $device_id = $device->id;
+                }else{
+                    $device = Device::all()->where("device_id" ,$data->user_id)->where("device_type" ,$data->device_os)->get();
+                    $device_id = $device->id;
                 }
 
                 $time = strtotime( $value->create_time );
                 
                 $sensorData = new Sensor_data();
-                $sensorData->device_id              = $data->user_id;
+               // $sensorData->device_id              = $data->user_id;
+                $sensorData->device_id              = $device_id;
                 $sensorData->data_send_time         = date("Y-m-d H:i:s"); 
                 $sensorData->time_check             = date("Y-m-d H:i:s", $time);
                 $sensorData->status_screen          = ($value->screen_status) ? 1 : 0;
@@ -62,7 +67,8 @@ class ApiController extends Controller
             $timeWakeUp         = strtotime( $data->quiz_data->wake_up_time );
 
             $sleepTime = new Sleep_time();
-            $sleepTime->device_id           = $data->user_id;
+            //$sleepTime->device_id           = $data->user_id;
+            $sleepTime->device_id           = $device_id;
             $sleepTime->data_send_time      = date("Y-m-d H:i:s");
             $sleepTime->time_register_reply = date("Y-m-d H:i:s", $timeRegisterReply);
             $sleepTime->bed_time            = date("H:i:s", $timeBed);
