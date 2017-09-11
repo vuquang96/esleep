@@ -18,6 +18,20 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
-Route::post("esleep", ['as' => 'esleep_post', 'uses' => 'ApiController@esleep']);
+//Route::post("esleep", ['as' => 'esleep_post', 'uses' => 'ApiController@esleep']);
 
+$api = app('Dingo\Api\Routing\Router');
 
+$api->version('v1', function ($api) {
+	$api->get('test', function(){
+		return "ok";
+	});
+	$api->post('test',['namespace' => 'App\Api\Controllers\ApiController'], 'esleep');
+	/*$api->post('test', function (Request $request){
+				echo "<pre>";
+			    print_r($request->all());
+			    echo "</pre>";
+	    //return response()->json($request->getContent());
+	    //echo json_decode($request->getContent());
+	});*/
+});
